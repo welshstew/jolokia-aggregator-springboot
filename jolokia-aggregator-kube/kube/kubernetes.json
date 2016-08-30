@@ -11,6 +11,31 @@
   },
   "objects" : [ {
     "apiVersion" : "v1",
+    "kind" : "Service",
+    "metadata" : {
+      "annotations" : { },
+      "labels" : {
+        "project" : "jolokia-aggregator-api",
+        "provider" : "org.swinchester.metrics",
+        "version" : "1.0-SNAPSHOT",
+        "group" : "api"
+      },
+      "name" : "jolokia-aggregator-svc"
+    },
+    "spec" : {
+      "deprecatedPublicIPs" : [ ],
+      "externalIPs" : [ ],
+      "ports" : [ {
+        "port" : 8080,
+        "protocol" : "TCP",
+        "targetPort" : 8080
+      } ],
+      "selector" : {
+        "deploymentconfig" : "jolokia-aggregator-api"
+      }
+    }
+  }, {
+    "apiVersion" : "v1",
     "kind" : "ImageStream",
     "metadata" : {
       "annotations" : { },
@@ -62,7 +87,7 @@
         "sourceStrategy" : {
           "env" : [ {
             "name" : "JAVA_MAIN_CLASS",
-            "value" : "org.apache.camel.spring.Main"
+            "value" : "org.swinchester.metrics.jolokia.app.JolokiaAggregatorApplication"
           }, {
             "name" : "ARTIFACT_DIR",
             "value" : "jolokia-aggregator-api/target"
@@ -130,8 +155,8 @@
             "args" : [ ],
             "command" : [ ],
             "env" : [ {
-              "name" : "OPENSHIFT_MASTER_URI",
-              "value" : "${OPENSHIFT_MASTER_URI}"
+              "name" : "SPRING_CONFIG_LOCATION",
+              "value" : "file:///etc/config/application.yml"
             }, {
               "name" : "KUBERNETES_NAMESPACE",
               "valueFrom" : {
@@ -145,13 +170,13 @@
             "livenessProbe" : {
               "initialDelaySeconds" : 30,
               "tcpSocket" : {
-                "port" : 9090
+                "port" : 8080
               },
               "timeoutSeconds" : 60
             },
             "name" : "jolokia-aggregator-api",
             "ports" : [ {
-              "containerPort" : 9090,
+              "containerPort" : 8080,
               "name" : "http",
               "protocol" : "TCP"
             }, {
@@ -162,16 +187,26 @@
             "readinessProbe" : {
               "initialDelaySeconds" : 30,
               "tcpSocket" : {
-                "port" : 9090
+                "port" : 8080
               },
               "timeoutSeconds" : 1
             },
-            "volumeMounts" : [ ]
+            "volumeMounts" : [ {
+              "mountPath" : "/etc/config",
+              "name" : "jolokia-agg-cfg",
+              "readOnly" : true
+            } ]
           } ],
           "imagePullSecrets" : [ ],
           "nodeSelector" : { },
           "restartPolicy" : "Always",
-          "volumes" : [ ]
+          "volumes" : [ {
+            "configMap" : {
+              "items" : [ ],
+              "name" : "jolokia-agg-cfg"
+            },
+            "name" : "jolokia-agg-cfg"
+          } ]
         }
       },
       "triggers" : [ {
@@ -206,14 +241,11 @@
     }
   } ],
   "parameters" : [ {
-    "name" : "OPENSHIFT_MASTER_URI",
-    "value" : "https://10.1.2.2"
-  }, {
     "name" : "IS_TAG",
     "value" : "latest"
   }, {
     "name" : "GIT_URI",
-    "value" : "asdsadsa"
+    "value" : "https://github.com/welshstew/jolokia-aggregator-springboot.git"
   }, {
     "name" : "REGISTRY",
     "value" : "172.30.233.53:5000"

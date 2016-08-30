@@ -84,7 +84,7 @@ public class BuildConfigKubernetesModelProcessor {
                         .withNewSourceStrategy()
                             .addNewEnv()
                                 .withName("JAVA_MAIN_CLASS")
-                                .withValue("org.apache.camel.spring.Main")
+                                .withValue("org.swinchester.metrics.jolokia.app.JolokiaAggregatorApplication")
                             .endEnv()
                             .addNewEnv()
                                 .withName("ARTIFACT_DIR")

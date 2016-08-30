@@ -26,7 +26,7 @@ public class MainKubernetesModelProcessor {
     public void withTemplateBuilder(TemplateBuilder builder) {
 
         new BuildConfigKubernetesModelProcessor().on(builder);
+        new ServiceKubernetesModelProcessor().on(builder);
         new RouteConfigKubernetesModelProcessor().on(builder);
-
     }
 }

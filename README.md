@@ -1,0 +1,6 @@
+
+```
+
+oc create configmap 
+
+```

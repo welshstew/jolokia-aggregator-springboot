@@ -6,6 +6,7 @@ import io.fabric8.openshift.api.model.DeploymentTriggerImageChangeParams;
 import io.fabric8.openshift.api.model.DeploymentTriggerPolicy;
 import io.fabric8.utils.Lists;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +32,7 @@ public class DeploymentConfigKubernetesModelProcessor {
                         .editSpec()
                             .withContainers(getContainers())
                             .withRestartPolicy("Always")
+                            .withVolumes(getVolumes())
                         .endSpec()
                     .endTemplate()
                     .withTriggers(getTriggers())
@@ -68,7 +70,7 @@ public class DeploymentConfigKubernetesModelProcessor {
         List<ContainerPort> ports = new ArrayList<ContainerPort>();
 
         ContainerPort http = new ContainerPort();
-        http.setContainerPort(9090);
+        http.setContainerPort(ConfigParameters.CONTAINER_PORT);
         http.setProtocol("TCP");
         http.setName("http");
 
@@ -94,13 +96,32 @@ public class DeploymentConfigKubernetesModelProcessor {
         namespace.setValueFrom(namespaceSource);
 
         EnvVar masterURI = new EnvVar();
-        masterURI.setName("OPENSHIFT_MASTER_URI");
-        masterURI.setValue("${OPENSHIFT_MASTER_URI}");
+        masterURI.setName("SPRING_CONFIG_LOCATION");
+        masterURI.setValue("file:///etc/config/application.yml");
 
         envVars.add(masterURI);
         envVars.add(namespace);
         return envVars;
     }
+
+    private List<Volume> getVolumes(){
+
+        Volume configMap = new Volume();
+        configMap.setConfigMap(new ConfigMapVolumeSource(null, ConfigParameters.CONFIGMAP_NAME));
+        configMap.setName(ConfigParameters.CONFIGMAP_NAME);
+
+        List<Volume> volList = new ArrayList<>();
+        volList.add(configMap);
+
+        return volList;
+    }
+
+    private List<VolumeMount> getVolumeMounts(){
+        ArrayList<VolumeMount> avm = new ArrayList<>();
+        avm.add(new VolumeMount(ConfigParameters.CONFIGMAP_MOUNT,ConfigParameters.CONFIGMAP_NAME,true));
+        return avm;
+    }
+
 
     private Container getContainers() {
         Container container = new Container();
@@ -111,6 +132,7 @@ public class DeploymentConfigKubernetesModelProcessor {
         container.setEnv(getEnvironmentVariables());
         container.setLivenessProbe(getProbe(new Integer(30), new Integer(60)));
         container.setReadinessProbe(getProbe(new Integer(30), new Integer(1)));
+        container.setVolumeMounts(getVolumeMounts());
         return container;
     }
 
@@ -126,7 +148,7 @@ public class DeploymentConfigKubernetesModelProcessor {
 
     private Probe getProbe(Integer initialDelaySeconds, Integer timeoutSeconds) {
         TCPSocketAction jettyAction = new TCPSocketAction();
-        jettyAction.setPort(new IntOrString(9090));
+        jettyAction.setPort(new IntOrString(ConfigParameters.CONTAINER_PORT));
 
         Probe probe = new Probe();
         probe.setInitialDelaySeconds(initialDelaySeconds);
