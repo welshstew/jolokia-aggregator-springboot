@@ -1,4 +1,4 @@
-package org.swinchester.metrics.jolokia.routebuilder
+package org.swinchester.metrics.jolokia.http
 
 import org.apache.camel.Exchange
 import org.apache.camel.processor.aggregate.AggregationStrategy

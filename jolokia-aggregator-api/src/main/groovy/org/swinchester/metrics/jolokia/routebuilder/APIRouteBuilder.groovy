@@ -2,15 +2,11 @@ package org.swinchester.metrics.jolokia.routebuilder
 
 import groovy.json.JsonOutput
 import org.apache.camel.Exchange
-import org.apache.camel.Predicate
 import org.apache.camel.Processor
-import org.apache.camel.builder.PredicateBuilder
 import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.model.rest.RestBindingMode
-import org.apache.camel.processor.validation.PredicateValidationException
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.swinchester.metrics.jolokia.http.JolokiaRequestProcessor
+import org.swinchester.metrics.jolokia.http.JsonAggregationStrategy
 
 /**
  * Created by swinchester on 5/07/16.
