@@ -25,9 +25,12 @@
         <fabric8.useDeploymentConfig>true</fabric8.useDeploymentConfig>
 
         <!-- Labels -->
-        <fabric8.label.app>${project.artifactId}</fabric8.label.app>
+        <fabric8.label.app>jolokia-aggregator-api</fabric8.label.app>
         <fabric8.label.group>api</fabric8.label.group>
-        <fabric8.provider/>
+        <fabric8.label.provider>org.swinchester.metrics</fabric8.label.provider>
+        <fabric8.label.project>jolokia-aggregator-api</fabric8.label.project>
+        <fabric8.provider>org.swinchester.metrics</fabric8.provider>
+
 
         <!-- Parameters -->
         <fabric8.parameter.IS_TAG.value>latest</fabric8.parameter.IS_TAG.value>
@@ -37,8 +40,6 @@
         <fabric8.parameter.GIT_URI.value>https://github.com/welshstew/jolokia-aggregator-springboot.git</fabric8.parameter.GIT_URI.value>
 
         <!-- Services -->
-        <fabric8.container.name>${project.artifactId}</fabric8.container.name>
-        <fabric8.iconRef>java</fabric8.iconRef>
 
         <fabric8.service.jolokia-aggregator-svc.port>8080</fabric8.service.jolokia-aggregator-svc.port>
         <fabric8.service.jolokia-aggregator-svc.containerPort>8080</fabric8.service.jolokia-aggregator-svc.containerPort>

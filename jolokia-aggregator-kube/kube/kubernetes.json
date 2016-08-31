@@ -3,9 +3,7 @@
   "kind" : "Template",
   "labels" : { },
   "metadata" : {
-    "annotations" : {
-      "fabric8.jolokia-aggregator-kube/iconUrl" : "https://cdn.rawgit.com/fabric8io/fabric8/master/fabric8-maven-plugin/src/main/resources/icons/java.svg"
-    },
+    "annotations" : { },
     "labels" : { },
     "name" : "jolokia-aggregator-kube"
   },
@@ -144,8 +142,9 @@
         "metadata" : {
           "annotations" : { },
           "labels" : {
-            "app" : "jolokia-aggregator-kube",
-            "project" : "jolokia-aggregator-kube",
+            "app" : "jolokia-aggregator-api",
+            "project" : "jolokia-aggregator-api",
+            "provider" : "org.swinchester.metrics",
             "version" : "1.0-SNAPSHOT",
             "group" : "api"
           }

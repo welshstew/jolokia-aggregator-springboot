@@ -28,7 +28,7 @@ class KubeDiscoveryProcessor implements Processor{
         String labelName = labelList[0]
         String labelValue = labelList[1]
 
-        def serverUrl = exchange.in.headers.'RequestHost' ?:"https://kubernetes.default"
+        def serverUrl = exchange.in.headers.'RequestHost' ?:"https://kubernetes.default.svc"
         log.debug("about to call kubernetes to look for ${labelFilter} in ${namespace}")
         client = new DefaultKubernetesClient(serverUrl)
         PodList kubePods = client.inNamespace(namespace).pods().withLabel(labelName,labelValue).list()
