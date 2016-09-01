@@ -6,6 +6,7 @@ import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
 /**
@@ -18,9 +19,13 @@ class KubeDiscoveryProcessor implements Processor{
 
     Logger log = LoggerFactory.getLogger(this.class)
 
+    @Value('${openshift.cluster.host}')
+    String clusterHost;
+
     @Override
     void process(Exchange exchange) throws Exception {
 
+        String serverUrl = "https://${clusterHost}:8443"
         String namespace = exchange.in.getHeader("kube-namespace") ?: "jolokia"
         String labelFilter = exchange.in.getHeader("kube-label") ?: "type=amq"
 
@@ -28,7 +33,7 @@ class KubeDiscoveryProcessor implements Processor{
         String labelName = labelList[0]
         String labelValue = labelList[1]
 
-        def serverUrl = exchange.in.headers.'RequestHost' ?:"https://kubernetes.default.svc"
+//        def serverUrl = exchange.in.headers.'RequestHost' ?:"https://kubernetes.default.svc"
         log.debug("about to call kubernetes to look for ${labelFilter} in ${namespace}")
         client = new DefaultKubernetesClient(serverUrl)
         PodList kubePods = client.inNamespace(namespace).pods().withLabel(labelName,labelValue).list()

@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 
-import static groovyx.net.http.ContentType.*
-import static groovyx.net.http.Method.*
-
 /**
  * Created by swinchester on 5/07/16.
  */
@@ -20,13 +17,13 @@ class JolokiaRequestProcessor implements Processor{
 
     Logger log = LoggerFactory.getLogger(JolokiaRequestProcessor.class)
 
-    @Value('${openshift.cluster.uri}')
-    String clusterHostURI;
+    @Value('${openshift.cluster.host}')
+    String clusterHost;
 
     @Override
     void process(Exchange exchange) throws Exception {
 
-        String httpRequestHost = "https://${clusterHostURI}:8443"
+        String httpRequestHost = "https://${clusterHost}:8443"
         String namespace = exchange.in.headers.'kube-namespace' ?: "jolokia"
         String token = exchange.in.headers.'Authorization'
         token = token.replace("Bearer ", "")

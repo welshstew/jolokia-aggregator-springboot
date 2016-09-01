@@ -36,13 +36,15 @@ class APIRouteBuilder extends RouteBuilder {
             }
         })
 
+        //TODO: need to copy out the Authorization and other headers
         from('direct:proxyAggregate')
+            .to("log:org.swinchester?showAll=true")
             .enrich('direct:getPodNames')
             .setProperty('originalBody', simple('${body}'))
             .split(header('podNames'), new JsonAggregationStrategy()).parallelProcessing()
                 .processRef("jolokiaRequestProcessor")
             .end()
-            .to("log:stuff?showAll=true")
+            .to("log:org.swinchester?showAll=true")
 
         from("direct:getPodNames")
             .processRef("kubeDiscoveryProcessor")
