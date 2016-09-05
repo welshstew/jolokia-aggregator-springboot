@@ -95,11 +95,11 @@ public class DeploymentConfigKubernetesModelProcessor {
         namespace.setName("KUBERNETES_NAMESPACE");
         namespace.setValueFrom(namespaceSource);
 
-        EnvVar masterURI = new EnvVar();
-        masterURI.setName("SPRING_CONFIG_LOCATION");
-        masterURI.setValue("file:///etc/config/application.yml");
+        EnvVar config = new EnvVar();
+        config.setName("SPRING_CONFIG_LOCATION");
+        config.setValue("file:///etc/config/application.yml");
 
-        envVars.add(masterURI);
+        envVars.add(config);
         envVars.add(namespace);
         return envVars;
     }
