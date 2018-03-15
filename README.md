@@ -6,6 +6,8 @@ The Jolokia Aggregator provides a single endpoint where you are able to access a
 1.  Query the kubernetes api for pods in the kube-namespace which match the supplied kube-label
 2.  For each pod name returned, the response will be aggregated into a big json.
 
+![Aggregator Use Case](./puml/jolokia-aggregator-usecase.png)
+
 ## How?
 
 Requires the following HTTP headers:
@@ -117,3 +119,7 @@ Response:
     }
 ]
 ```
+
+## References
+
+Please see [Jolokia JVM Monitoring in OpenShift](https://developers.redhat.com/blog/2016/03/30/jolokia-jvm-monitoring-in-openshift/).

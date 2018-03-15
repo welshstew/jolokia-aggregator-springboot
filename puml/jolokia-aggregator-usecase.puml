@@ -1,0 +1,43 @@
+@startuml
+actor Client
+participant JolokiaAggregator
+participant KubeAPI
+participant JolokiaProxy
+participant BrokerPod1
+participant BrokerPod2
+collections BrokerPodX
+Client -> JolokiaAggregator: token=xxx, labels=(app=broker), project=A
+activate JolokiaAggregator
+JolokiaAggregator -> KubeAPI: getPods(labels=(app=broker),project=A)
+activate KubeAPI
+KubeAPI -> JolokiaAggregator: pod-names
+deactivate KubeAPI
+JolokiaAggregator -> JolokiaAggregator: for each in parallel()
+JolokiaAggregator -> JolokiaProxy
+activate JolokiaProxy
+JolokiaProxy -> BrokerPod1: request
+activate BrokerPod1
+BrokerPod1 -> JolokiaProxy: response
+deactivate BrokerPod1
+JolokiaProxy -> JolokiaAggregator: response
+deactivate JolokiaProxy
+JolokiaAggregator -> JolokiaProxy
+activate JolokiaProxy
+JolokiaProxy -> BrokerPod2: request
+activate BrokerPod2
+BrokerPod2 -> JolokiaProxy: response
+deactivate BrokerPod2
+JolokiaProxy -> JolokiaAggregator: response
+deactivate JolokiaProxy
+JolokiaAggregator -> JolokiaProxy
+activate JolokiaProxy
+JolokiaProxy -> BrokerPodX: request
+activate BrokerPodX
+BrokerPodX -> JolokiaProxy: response
+deactivate BrokerPodX
+JolokiaProxy -> JolokiaAggregator: response
+deactivate JolokiaProxy
+JolokiaAggregator -> JolokiaAggregator: aggregate responses()
+JolokiaAggregator -> Client: Jolokia response list
+deactivate JolokiaAggregator
+@enduml
